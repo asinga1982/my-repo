@@ -1,0 +1,6 @@
+data("Wage")
+
+#Fit linear model using step function using the cut()
+fit.step <- lm(wage~cut(age,4), data=Wage)
+
+summary(fit.step)

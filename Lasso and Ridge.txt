@@ -1,0 +1,38 @@
+library(glmnet)
+
+x <- model.matrix(Salary~., data=Hit[,-1])
+y <- Hit$Salary
+
+grid <- 10^seq(10,-2,length=100)
+# Ridge Model, alpha=1 -> for lasso
+ridge.mod <- glmnet(x,y,alpha = 0, lambda = grid, standardize = T)
+
+#Predicting co-eff for a new value of Lambda
+predict(ridge.mod, s=0, type="coefficients")
+
+#splitting the data
+set.seed(1)
+train <- sample(1:nrow(x), nrow(x)/2)
+test <- (-train)
+y.test <- y[test]
+
+#Fit Lasso on training data
+ridge.mod <- glmnet(x[train,],y[train],alpha = 1, lambda = grid, standardize = T, 
+                    thresh = 1e-12)
+plot(ridge.mod)
+
+ridge.pred <- predict(ridge.mod, s=4, newx = x[test,])
+
+mean((ridge.pred - y.test)^2)
+
+#Fitting using cv
+set.seed(100)
+cv.out <- cv.glmnet(x[train,], y[train],alpha=0, nfolds = 20)
+plot(cv.out)
+
+best.lambda = cv.out$lambda.min
+
+#Fit a model using the best lambda and full data
+ridge.mod <- glmnet(x,y,alpha = 0, lambda = best.lambda, standardize = T)
+
+

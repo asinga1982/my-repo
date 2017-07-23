@@ -1,0 +1,25 @@
+library(pls)
+
+#PCA with 10-fold CV
+set.seed(2)
+pcr.fit <- pcr(Salary~.,data=Hit,scale=T,validation="CV")
+
+summary(pcr.fit)
+validationplot(pcr.fit, val.type = "MSEP")
+
+#Using training and test data
+set.seed(1)
+train <- sample(1:nrow(x), nrow(x)/2)
+test <- (-train)
+
+set.seed(2)
+pcr.fit <- pcr(Salary~.,data=Hit,subset=train,scale=T,validation="CV")
+validationplot(pcr.fit, val.type = "MSEP")
+
+#Predict uisng only 7 principal components
+pcr.pred <- predict(pcr.fit, ncomp=7, newdata = x[test,])
+mean((pcr.pred - y.test)^2)
+
+#Fit PCA on full data
+set.seed(2)
+pcr.fit <- pcr(Salary~.,data=Hit,scale=T,ncomp=7)

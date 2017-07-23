@@ -1,0 +1,24 @@
+library(splines)
+
+#Fit cubic spline using knots
+fit.sp <- lm(wage~bs(age, knots = c(25,40,60)), data=Wage)
+summary(fit.sp)
+
+#Fit cubic spline using degrees of freedom, knots are uniformyl dustributed
+fit.sp <- lm(wage~bs(age, df=6, degree = 3), data=Wage)
+summary(fit.sp)
+
+#natural splines with 4 degrees of freedom, can also specify knots
+fit1 <- lm(wage~ns(age,df=4), data=Wage)
+summary(fit1)
+
+#Smoothing splines by speficying degrees of freedom
+fit2 <- smooth.spline(Wage$age,Wage$wage,df=16)
+fit2
+#Smoothing splines by CV
+fit3 <- smooth.spline(Wage$age,Wage$wage,cv=T)
+fit3
+
+#Local Regression
+fit.local <- loess(wage~age, span = 0.2, data=Wage)
+fit.local

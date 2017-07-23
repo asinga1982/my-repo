@@ -1,0 +1,50 @@
+#Automatic selection
+library(leaps)
+reg.fit <- regsubsets(Salary~., data=Hit, nvmax=15)
+#nvmax -> max variables to be included in output
+
+summ <- summary(reg.fit)
+names(summ)
+
+summ$adjr2
+summ$bic
+
+par(mfrow=c(2,2))
+plot(summ$adjr2, type="l")
+plot(summ$bic, type="l")
+plot(summ$rsq, type="l")
+points(8,summ$adjr2[8],col="red",cex=2, pch=20)
+
+which.min(summ$bic)
+
+plot(reg.fit, scale = "bic")
+coef(reg.fit,6)
+
+#Forward Selection
+reg.fwd <- regsubsets(Salary~., data=Hit, nvmax=10, method = "forward")
+summary(reg.fwd)
+
+#Backward Selection
+reg.bck <- regsubsets(Salary~., data=Hit, nvmax=10, method = "backward")
+summary(reg.bck)
+
+#CV
+set.seed(1)
+train <- sample(c(TRUE,FALSE), nrow(Hit), rep=T)
+test <- (!train)
+
+#tRain using training set
+regfit.best <- regsubsets(Salary~., data=Hit[train,], nvmax = 19)
+
+test.mat <- model.matrix(Salary~., data=Hit[test,]) 
+
+val.err <- rep(NA,19)
+
+for (i in 1:19)
+{
+  coeffi <- coef(regfit.best, id=i)
+  pred <- test.mat[,names(coeffi)] %*% coeffi
+  val.err[i] = mean((Hit$Salary[test]-pred)^2)
+}
+
+plot(val.err)

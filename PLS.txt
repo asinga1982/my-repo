@@ -1,0 +1,25 @@
+library(pls)
+
+#PLS with 10-fold CV
+set.seed(2)
+pls.fit <- plsr(Salary~.,data=Hit,scale=T,validation="CV")
+
+summary(pls.fit)
+validationplot(pls.fit, val.type = "MSEP")
+
+#Using training and test data
+set.seed(1)
+train <- sample(1:nrow(x), nrow(x)/2)
+test <- (-train)
+
+set.seed(2)
+pls.fit <- plsr(Salary~.,data=Hit,subset=train,scale=T,validation="CV")
+validationplot(pls.fit, val.type = "MSEP")
+
+#Predict uisng only 7 principal components
+pls.pred <- predict(pls.fit, ncomp=1, newdata = x[test,])
+mean((pls.pred - y.test)^2)
+
+#Fit PLS on full data
+set.seed(2)
+pls.fit <- plsr(Salary~.,data=Hit,scale=T,ncomp=1)
