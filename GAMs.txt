@@ -1,0 +1,34 @@
+library(gam)
+library(akima)
+
+# Simple GAM using natural splines
+gam1 <- lm(wage~ns(age,5)+ns(year,4)+education, data=Wage)
+summary(gam1)
+
+#Fit GAM using Smoothing splines
+gam.3 <- gam(wage~s(age,5)+s(year,4)+education, data=Wage)
+summary(gam.2)
+
+par(mfrow=c(1,3))
+plot(gam2)
+
+gam.1 <- gam(wage~s(age,5)+education, data=Wage)
+
+gam.2 <- gam(wage~s(age,5)+year+education, data=Wage)
+
+anova(gam.1, gam.2, gam.3)
+
+#Local Regression in GAM
+gam.local <- gam(wage~lo(age,span = 0.7)+year+education, data=Wage)
+plot(gam.local)
+
+#lo() can create interactions
+gam.local <- gam(wage~lo(year,age,span = 0.5)+education, data=Wage)
+plot(gam.local)
+
+#Logistic GAM
+
+gam.lr <- gam(I(wage>250)~year+s(age,df=2)+education, data=Wage, family = binomial)
+par(mfrow=c(1,3))
+plot(gam.lr)
+

@@ -1,0 +1,19 @@
+library(randomForest)
+
+set.seed(1)
+
+#Bagging (m=p)
+bag.model <- randomForest(medv~., data=Boston, subset = train, mtry=13, importance=T)
+
+bag.model
+importance(bag.model)
+
+pred <- predict(bag.model, newdata = Boston[-train,])
+
+# Rf model
+rf.model <- randomForest(medv~., data=Boston, subset = train, mtry=6, importance=T)
+rf.model
+importance(rf.model)
+
+#Plot variable importance
+varImpPlot(rf.model)
