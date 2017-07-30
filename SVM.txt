@@ -1,0 +1,79 @@
+library(e1071)
+library(LiblineaR)
+library(ROCR)
+
+#Data Preparation
+set.seed(1)
+x=matrix(rnorm(20*2), ncol=2)
+y=c(rep(-1,10), rep(1,10))
+
+x[y==1,] = x[y==1,] +1
+
+plot(x,col=(3-y))
+dat <- data.frame(x=x, y=as.factor(y))
+
+#Fitting SVM classifies
+svm.model <- svm(y~., data=dat, kernel="linear", cost=10,scale = F)
+
+plot(svm.model, dat)
+#Support vectors are shown as x and other points as o, can also be got using the below points
+svm.model$index
+
+summary(svm.model)
+
+#Uisng Cross validation
+tune.out <- tune(svm,y~., data=dat, kernel="linear", 
+              ranges = list(cost=c(0.001, 0.01, 0.1, 1, 10, 100)))
+
+summary(tune.out)      
+
+#Getting the best model
+best.svmmodel <- tune.out$best.model
+summary(best.svmmodel)
+
+#Non-Linear SVMs
+#kernerl="polynomial", degree
+#kernerl="radial", gamma
+
+set.seed(21)
+tune.out <- tune(svm,Purchase~., data=OJ.train, kernel="polynomial", 
+              ranges = list(cost=c(0.01, 0.05, 0.1, 0.5 ,1, 10),
+                            degree=c(2,3,4,5)))
+
+summary(tune.out)      
+
+set.seed(21)
+tune.out <- tune(svm,Purchase~., data=OJ.train, kernel="radial", 
+              ranges = list(cost=c(0.01, 0.05, 0.1, 0.5 ,1, 10),
+                            gamma=c(0.01,0.1,1,10,100)))
+
+summary(tune.out)
+
+#ROC plot
+
+rocplpt <- function(pred,truth,...)
+{
+  
+  predobj <- prediction(pred,truth)
+  perf <- performance(predobj,"tpr", "fpr")
+  plot(perf,...)
+}
+
+svm.model <- svm(y~., data=dat, kernel="linear", cost=10,scale = F, decision.values=T)
+pred <- attributes(predict(svm.model, newdata = dat, decision.values=T,))$decision.values
+
+rocplpt(pred, dat$y)
+
+#Plot pairs of variables
+svm.linear = svm(mpglevel ~ ., data = Auto, kernel = "linear", cost = 1)
+svm.poly = svm(mpglevel ~ ., data = Auto, kernel = "polynomial", cost = 10, 
+    degree = 2)
+svm.radial = svm(mpglevel ~ ., data = Auto, kernel = "radial", cost = 10, gamma = 0.01)
+
+plotpairs = function(fit) {
+    for (name in names(Auto)[!(names(Auto) %in% c("mpg", "mpglevel", "name"))]) {
+        plot(fit, Auto, as.formula(paste("mpg~", name, sep = "")))
+    }
+}
+
+plotpairs(svm.linear)
