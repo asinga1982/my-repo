@@ -41,5 +41,45 @@ naive(AirPassengers, h=20) #Same as last value
 snaive(AirPassengers,h=20) # Same as last season's value
 plot(rwf(AirPassengers, h=50,drift = T)) # Drift to predict the trend
 
+#Make time plots simple by removing variation due to calendar days, 
+#population,
+#Inflation
+#Price Index
+#CPI
+#Log/Box-Cox Transformations
+
+AP <- AirPassengers/monthdays(AirPassengers)
+cbind(AirPassengers, AP) %>% autoplot(facet=T)
+
+lambda <- BoxCox.lambda(AP)
+autoplot(BoxCox(AP, lambda))
+
+#Bias Adjustment
+plot(rwf(AP,drift = T, lambda = lambda, biasadj = T))
+
+#Residuals Should be:
+#1. Uncorrelated
+#2. Have mean zero
+#3. Normaly distributed (nice to have)
+#4. Have constant variation (nice to have)
+
+#Prediction Interval is calculated using Normal Distribution
+
+#Ljung-Box test for residuals, a large p-value indicates that Q* is not significant
+checkresiduals(naive(AP))
+
+#Doing Ljung Box test separatly
+naive_model <- snaive(AP)
+Box.test(naive_model$residuals, lag=10,fitdf=0, type="Lj")
+
+#A forecast method that minimizes the MAE will lead to forecasts of the median, 
+#while minimizing the RMSE will lead to forecasts of the mean
+
+#Cross validation 
+err <- tsCV(AP, rwf, drift=TRUE, h=1)
+sqrt(mean(err^2, na.rm=TRUE))
+
+#Outputs all Accuracy numbers
+accuracy(naive_model)
 
 
