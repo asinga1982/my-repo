@@ -43,4 +43,20 @@ summary(fourier.beer)
 #bizdays(ausbeer) can calculated no of trading days in the month/Quater
 
 #Lagged variables can be used for ad campaigns, 
-#Events can be represented as 0 and 1 
+#Events can be represented as 0 and 1
+
+#ACF of errors -> Model is usable but can be improved
+#If Errors are normally distributed, prediction interval is easier to calculated
+#Plot residuals against Predictors to see if there is a evidence of non-linear relationship
+#Plot residuals agains fitted. If there is a trend then a transformation of the outcome is required
+
+#Generates all the model selection parameters for a given model
+CV(fourier.beer)
+
+#Fitting exponential Trend
+fit.exp <- tslm(marathon ~ trend, lambda = 0)
+
+#Vizualizing the plot
+autoplot(marathon) +
+  forecast::autolayer(fitted(fit.exp), series="Exponential")
+
