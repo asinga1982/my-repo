@@ -7,9 +7,9 @@ Trees
 Randon Forest & Bagging  
 Boosted Trees   
 Support Vector Machines   
-Principal Component Analysis (PCA)
-PLS
-Genralized Additive Models (GAM)
+Principal Component Analysis (PCA)  
+PLS  
+Genralized Additive Models (GAM)  
 
 ## Detailed Time Series Analysis
 Niave, SNaive, Random Walk with Drift  
