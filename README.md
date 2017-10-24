@@ -4,11 +4,12 @@
 Linear Regression including Ridge and Lasso  
 Logistic Regression   
 Trees   
-Randon Forest   
+Randon Forest & Bagging  
 Boosted Trees   
 Support Vector Machines   
 Principal Component Analysis (PCA)
 PLS
+Genralized Additive Models (GAM)
 
 ## Detailed Time Series Analysis
 Niave, SNaive, Random Walk with Drift  
