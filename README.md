@@ -9,7 +9,8 @@ Boosted Trees
 Support Vector Machines   
 Principal Component Analysis (PCA)  
 PLS  
-Genralized Additive Models (GAM)  
+Genralized Additive Models (GAM) 
+Splines
 
 ## Detailed Time Series Analysis
 Niave, SNaive, Random Walk with Drift  
