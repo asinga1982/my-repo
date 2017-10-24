@@ -1,4 +1,4 @@
-#Time Series Analysis - Decomposition using Moving Avg & X11 
+#Time Series Analysis - Decomposition using Moving Avg, X11, SEATS, STL 
 
 #http://otexts.org/fpp2
 
@@ -50,3 +50,20 @@ autoplot(fit) +
 #Individual X11 Plots
 autoplot(trendcycle(fit))
 autoplot(seasadj(fit))
+autoplot(remainder(fit))
+autoplot(seasonal(fit))
+
+#SEATS Decomposition: (Handles only montly and quarterly seasonality)
+#--------------------
+fit <- seas(elecequip)
+
+autoplot(fit) +
+  ggtitle("SEATS decomposition of electrical equipment index")
+
+#STL Decomposition, uses loess method. Has options to control smoothness of trend and seasonlaity
+#------------------
+  
+elecequip %>%
+  stl(t.window=13, s.window="periodic", robust=T) %>%
+  autoplot
+
