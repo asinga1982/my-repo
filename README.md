@@ -10,7 +10,8 @@ Support Vector Machines
 Principal Component Analysis (PCA)  
 PLS  
 Genralized Additive Models (GAM) 
-Splines
+Splines  
+Feature Hashing  
 
 ## Detailed Time Series Analysis
 Niave, SNaive, Random Walk with Drift  
